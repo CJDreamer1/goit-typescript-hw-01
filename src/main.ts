@@ -93,7 +93,7 @@ function getVehicleType(vehicle: VehicleType) {
 console.log(getVehicleType(VehicleType.Car));
 console.log(getVehicleType(VehicleType.Motorcycle));
 // =============================================== тип Union Types
-// одне значення може мати кілька типів (наприклад якщол це props в React)
+// одне значення може мати кілька типів (наприклад якщо це props в React)
 function formatInput(input: string | number) {
   if (typeof input === "number") {
     return input.toFixed(2); //ця штука округляє до 2-х знаків після коми
@@ -115,3 +115,74 @@ function lightShower(color: "green" | "yellow" | "red") {
 }
 lightShower("black");
 // наприклад якщо викличемо функцію із значенням black як тут у нас - її підкреслить як помилку
+
+// ============================================= типізація повернення (return)
+// між ): string { -означає що return в результаті поверне рядок.
+// використовується в axios для типізатії повернення результатів з бекенду(якщо не типізувати return то TS покаже помилку)
+function logName(name: string): string {
+  return `${name}`;
+}
+// є також функції, які нічого не опвертають (addEventListener, onClick тд)
+// тут замість :string пишемо :void бо функція нічого не повертає (тільки виводить console.log() без return)
+// найчастіше використовуєтья при типізації Пропсів в React
+function logName(name: string): void {
+  console.log(`${name}`);
+}
+
+// =========================================== типізація never ===============
+// використовуєтья для типізації return. Коли функція повертає помилку (catch)
+function errorHandler(message: string): never {
+  throw new Error(message);
+}
+
+// =========================================== типізація інтерфейсу =========
+//це інтерфейс. різниця між ним і звичайним тайп об`єктом в тому, що інтерфейсом МОЖНА типізувати класи
+interface User {
+  name: string;
+  age: number;
+  lastName?: string; // приклад опціонального ключа (не обов`язкове значення або метод в класі) для типізації пропсів в React
+  sayHello(): string; // string тому, що повертає return
+  sayBye(): void; // void тому, що не овертає return (а повертає console.log)
+  showAge(userAge: number): string; // string бо повертає шаблонний рядок
+}
+// це звичайний тайп об`єкт. І ним НЕ МОЖНА типізувати класи
+type User = {
+  name: string;
+  age: number;
+  lastName?: string; // приклад опціонального ключа (не обов`язкове значення або метод в класі) для типізації пропсів в React
+};
+// ========================================== типізація методів в об`єкті
+const user = {
+  name: "Bob",
+  age: 12,
+  sayHello() {
+    return "Hello";
+  },
+  saayBye() {
+    console.log("Bye");
+  },
+  showAge(userAge: number) {
+    return `My age is${userAge}`;
+  },
+};
+
+//можна типізувати цілий об`єкт :User , а не окремо те, що прийме функція showAge(userAge: number)
+const student: User = {
+  name: "Bob",
+  age: 12,
+  sayHello() {
+    return "Hello";
+  },
+  saayBye() {
+    console.log("Bye");
+  },
+  showAge(userAge) {
+    //userAge підкреслюється тут бо на 149 стрічці type User перебиває типи
+    return `My age is${userAge}`;
+  },
+};
+
+// =================================================================================================
+// ========================================== Generics =============================================
+let name = "bob"; // неявна типізація (не використовується)
+let name: string = "bob"; // явна типізація (цим будемо користуватися)
