@@ -1,8 +1,8 @@
 type Status = "open" | "close";
 
 interface Details {
-  createAt: string | number | Date;
-  updateAt: string | number | Date;
+  createAt: Date;
+  updateAt: Date;
 }
 
 interface page {
