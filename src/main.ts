@@ -365,3 +365,45 @@ interface Employee {
 }
 // створюємо новий інтерфейс, який буде мати всі значення крім дати найму hireDate
 type employeeBasicInfo = Omit<Employee, "hireDate">;
+
+// ============================================ типізація асинхронної функції ==============
+interface User2 {
+  id: number;
+  name: string;
+  email: string;
+}
+// це приклад типізації return-а об`єкта user який нам прийде з сервера чере fetch (і це головна типізація)
+// тобто створити інтерфейс, який ми передаємо через вбудований метод :Promise<>
+async function fetchUser(): Promise<User2> {
+  try {
+    const response = await fetch(`https://api.user.com`);
+    const user = await response.json();
+    return user;
+  } catch (error) {
+    console.log("fetch error");
+    throw error;
+  }
+}
+
+const user = {
+  id: 1,
+  name: "Bob",
+  email: "user@gmail.com",
+};
+// ============================================ типізація асинхронної функції  Generics ==============
+// після fetchUser теж дописуємо <T>  щоб вийшло fetchUser<T>
+// заміняємо наш тип Promise<User2> на динамічний тип Promise<T>
+async function fetchUser<T>(url: string): Promise<T> {
+  try {
+    // в домашці в нас AXIOS тому ми надаємо тип Т до response щоб вийшло response: T
+    const response = await fetch(url);
+    const user: T = await response.json();
+    // парсимо, якщо не використовується AXIOS (в домашці він є відповідно цього не робимо)
+    return user;
+  } catch (error) {
+    console.log("fetch error");
+    throw error;
+  }
+}
+// При підключенні сторонніх бібліотек (axios, redux наприклад ) треба поставити типи для axios із сайта npm ( в redux-toolkit type script зашитий по дефолту)
+// на сайті npm шукаємо через @types/react-router-dom(наприклад) там копіюємо команду npm install щось там і ставимо як бібліотеку
