@@ -11,3 +11,4 @@ const roleDescription: RoleDescription = {
   [UserRole.editor]: "Editor User",
   [UserRole.guest]: "Guest User",
 };
+console.log(roleDescription);
